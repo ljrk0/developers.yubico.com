@@ -179,6 +179,12 @@ class ReleasesModule(Module):
                         redir = 'RewriteRule ^%s/%s$ %%{ENV:REQUEST_PROTO}://%%{HTTP_HOST}/%s/%s [L,R=302]\n' % (
                                 relpath, link, path, sig)
                         ret += redir
+
+        ret +='''
+RewriteCond %{REQUEST_URI} !\.(xml|html)$
+RewriteCond %{REQUEST_URI} ^/(.+)/Releases/(.+)$
+RewriteRule ^(.*)$ https://storage.googleapis.com/yubico-binaries/%1/releases/%2 [R=301,L]
+'''
         return ret
 
     def _post_run(self):
